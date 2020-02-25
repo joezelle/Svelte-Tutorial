@@ -4,6 +4,7 @@
   let jobTitle = "";
   let description = "";
   let image = "";
+  let id;
   $: uppercaseName = name.toUpperCase();
   // let done = true;
   let formState = "empty";
@@ -32,6 +33,7 @@
     createdContacts = [
       ...createdContacts,
       {
+        id: Math.random(),
         name: name,
         jobTitle: jobTitle,
         image: image,
@@ -39,6 +41,14 @@
       }
     ];
     formState = "done";
+  }
+
+  function deleteFirst() {
+    createdContacts = createdContacts.slice(1);
+  }
+
+  function deleteLast() {
+    createdContacts = createdContacts.slice(0, -1);
   }
 </script>
 
@@ -97,6 +107,8 @@
 </div>
 
 <button on:click={addCard}>Add Card Contact</button>
+<button on:click={deleteFirst}>Delete First Card</button>
+<button on:click={deleteLast}>Delete Last Card</button>
 
 {#if formState === 'invalid'}
   <p>Invalid Input.</p>
@@ -104,7 +116,7 @@
   <p>Please fill in your data</p>
 {/if}
 
-{#each createdContacts as contacts, i}
+{#each createdContacts as contacts, i (contacts.id)}
   <h2># {i + 1}</h2>
   <ContactCard
     username={contacts.name}
