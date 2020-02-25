@@ -50,6 +50,7 @@ textarea {
   transition: border-color 0.1s ease-out;
 }
 
+
 input:focus,
 textarea:focus {
   border-color: #e40763;

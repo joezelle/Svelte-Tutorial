@@ -5,6 +5,7 @@ const app = new App({
   props: {
     
   }
+  
 });
 
 export default app;

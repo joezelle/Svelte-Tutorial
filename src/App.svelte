@@ -7,6 +7,7 @@
   $: uppercaseName = name.toUpperCase();
   // let done = true;
   let formState = "empty";
+  let createdContacts = [];
 
   function changeName() {
     name = "John";
@@ -28,6 +29,15 @@
       formState = "invalid";
       return;
     }
+    createdContacts = [
+      ...createdContacts,
+      {
+        name: name,
+        jobTitle: jobTitle,
+        image: image,
+        description: description
+      }
+    ];
     formState = "done";
   }
 </script>
@@ -88,12 +98,20 @@
 
 <button on:click={addCard}>Add Card Contact</button>
 
-{#if formState === 'done'}
-  <ContactCard username={name} {jobTitle} {description} {image} />
-{:else if formState === 'invalid'}
+{#if formState === 'invalid'}
   <p>Invalid Input.</p>
 {:else}
   <p>Please fill in your data</p>
 {/if}
 
+{#each createdContacts as contacts, i}
+  <h2># {i + 1}</h2>
+  <ContactCard
+    username={contacts.name}
+    jobTitle={contacts.jobTitle}
+    description={contacts.description}
+    image={contacts.image} />
+{:else}
+  <p>Please add some Contacts</p>
+{/each}
 <main />
