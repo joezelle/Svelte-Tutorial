@@ -1,18 +1,71 @@
 <script>
   import ContactCard from "./ContactCard.svelte";
-
-  let name = "Max";
-  let title = "";
-  let image = "";
+  let name = "Joel";
+  let jobTitle = "";
   let description = "";
+  let image = "";
+  $: uppercaseName = name.toUpperCase();
+  // let done = true;
+  let formState = "empty";
+
+  function changeName() {
+    name = "John";
+  }
+
+  // using a function
+  function inputName(event) {
+    const enteredValue = event.target.value;
+    name = enteredValue;
+  }
+
+  function addCard() {
+    if (
+      name.trim().length === 0 ||
+      image.trim().length === 0 ||
+      jobTitle.trim().length === 0 ||
+      description.trim().length === 0
+    ) {
+      formState = "invalid";
+      return;
+    }
+    formState = "done";
+  }
 </script>
 
 <style>
+  main {
+    text-align: center;
+    padding: 1em;
+    max-width: 240px;
+    margin: 0 auto;
+  }
+
+  /* h1 {
+    color: #ff3e00;
+    text-transform: uppercase;
+    font-size: 4em;
+    font-weight: 100;
+  }
+
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  } */
+
   #form {
     width: 30rem;
     max-width: 100%;
   }
 </style>
+
+<!-- <h1>Hello {name}</h1> -->
+<!-- <button on:click={changeName}>Change Name</button> -->
+<!-- <input type="text" value={name} on:input={inputName} /> -->
+<!-- <input type="text" bind:value={name} />
+<input type="text" bind:value={image} />
+<input type="text" bind:value={jobTitle} />
+<input type="text" bind:value={description} /> -->
 
 <div id="form">
   <div class="form-control">
@@ -21,7 +74,7 @@
   </div>
   <div class="form-control">
     <label for="jobTitle">Job Title</label>
-    <input type="text" bind:value={title} id="jobTitle" />
+    <input type="text" bind:value={jobTitle} id="jobTitle" />
   </div>
   <div class="form-control">
     <label for="image">Image URL</label>
@@ -33,4 +86,14 @@
   </div>
 </div>
 
-<ContactCard userName={name} jobTitle={title} {description} userImage={image} />
+<button on:click={addCard}>Add Card Contact</button>
+
+{#if formState === 'done'}
+  <ContactCard username={name} {jobTitle} {description} {image} />
+{:else if formState === 'invalid'}
+  <p>Invalid Input.</p>
+{:else}
+  <p>Please fill in your data</p>
+{/if}
+
+<main />
