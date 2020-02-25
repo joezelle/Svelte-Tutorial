@@ -107,8 +107,15 @@
 </div>
 
 <button on:click={addCard}>Add Card Contact</button>
-<button on:click={deleteFirst}>Delete First Card</button>
-<button on:click={deleteLast}>Delete Last Card</button>
+<button
+  on:click={event => {
+    createdContacts = createdContacts.slice(1);
+  }}>
+  Delete First Card
+</button>
+<button on:click={event => (createdContacts = createdContacts.slice(0, -1))}>
+  Delete Last Card
+</button>
 
 {#if formState === 'invalid'}
   <p>Invalid Input.</p>
