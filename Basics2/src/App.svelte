@@ -1,5 +1,6 @@
 <script>
   import Product from "./Product.svelte";
+  import Modal from "./Modal.svelte";
 
   let products = [
     {
@@ -41,4 +42,10 @@
       on:add-to-cart={addToCart}
       on:delete={deleteProduct} />
   {/each}
+
+  <Modal>
+    <h1 slot="header">hello there</h1>
+    <p>this works</p>
+    <button slot="footer" type="button">Confirm</button>
+  </Modal>
 </main>
