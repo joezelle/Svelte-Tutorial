@@ -148,6 +148,10 @@ var app = (function () {
             resolved_promise.then(flush);
         }
     }
+    function tick() {
+        schedule_update();
+        return resolved_promise;
+    }
     function add_render_callback(fn) {
         render_callbacks.push(fn);
     }
@@ -984,14 +988,14 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
+    	child_ctx[9] = list[i];
     	return child_ctx;
     }
 
-    // (42:2) {#each products as product}
+    // (65:2) {#each products as product}
     function create_each_block(ctx) {
     	let current;
-    	const product_spread_levels = [/*product*/ ctx[7]];
+    	const product_spread_levels = [/*product*/ ctx[9]];
     	let product_props = {};
 
     	for (let i = 0; i < product_spread_levels.length; i += 1) {
@@ -1011,8 +1015,8 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			const product_changes = (dirty & /*products*/ 2)
-    			? get_spread_update(product_spread_levels, [get_spread_object(/*product*/ ctx[7])])
+    			const product_changes = (dirty & /*products*/ 4)
+    			? get_spread_update(product_spread_levels, [get_spread_object(/*product*/ ctx[9])])
     			: {};
 
     			product.$set(product_changes);
@@ -1035,14 +1039,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(42:2) {#each products as product}",
+    		source: "(65:2) {#each products as product}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (56:2) {#if showModal}
+    // (79:2) {#if showModal}
     function create_if_block$1(ctx) {
     	let current;
 
@@ -1051,18 +1055,18 @@ var app = (function () {
     				$$slots: {
     					default: [
     						create_default_slot,
-    						({ didAgree: closeable }) => ({ 2: closeable }),
-    						({ didAgree: closeable }) => closeable ? 4 : 0
+    						({ didAgree: closeable }) => ({ 4: closeable }),
+    						({ didAgree: closeable }) => closeable ? 16 : 0
     					],
     					footer: [
     						create_footer_slot,
-    						({ didAgree: closeable }) => ({ 2: closeable }),
-    						({ didAgree: closeable }) => closeable ? 4 : 0
+    						({ didAgree: closeable }) => ({ 4: closeable }),
+    						({ didAgree: closeable }) => closeable ? 16 : 0
     					],
     					header: [
     						create_header_slot,
-    						({ didAgree: closeable }) => ({ 2: closeable }),
-    						({ didAgree: closeable }) => closeable ? 4 : 0
+    						({ didAgree: closeable }) => ({ 4: closeable }),
+    						({ didAgree: closeable }) => closeable ? 16 : 0
     					]
     				},
     				$$scope: { ctx }
@@ -1070,8 +1074,8 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	modal.$on("close", /*close_handler*/ ctx[5]);
-    	modal.$on("cancel", /*cancel_handler*/ ctx[6]);
+    	modal.$on("close", /*close_handler*/ ctx[7]);
+    	modal.$on("cancel", /*cancel_handler*/ ctx[8]);
 
     	const block = {
     		c: function create() {
@@ -1084,7 +1088,7 @@ var app = (function () {
     		p: function update(ctx, dirty) {
     			const modal_changes = {};
 
-    			if (dirty & /*$$scope, closeable, showModal*/ 1029) {
+    			if (dirty & /*$$scope, closeable, showModal*/ 4113) {
     				modal_changes.$$scope = { dirty, ctx };
     			}
 
@@ -1108,14 +1112,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(56:2) {#if showModal}",
+    		source: "(79:2) {#if showModal}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (65:6) <h1 slot="header">
+    // (88:6) <h1 slot="header">
     function create_header_slot(ctx) {
     	let h1;
 
@@ -1124,7 +1128,7 @@ var app = (function () {
     			h1 = element("h1");
     			h1.textContent = "hello there";
     			attr_dev(h1, "slot", "header");
-    			add_location(h1, file$2, 64, 6, 1201);
+    			add_location(h1, file$2, 87, 6, 1819);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h1, anchor);
@@ -1138,14 +1142,14 @@ var app = (function () {
     		block,
     		id: create_header_slot.name,
     		type: "slot",
-    		source: "(65:6) <h1 slot=\\\"header\\\">",
+    		source: "(88:6) <h1 slot=\\\"header\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (69:6) <button         slot="footer"         on:click={() => {           showModal = false;         }}         disabled={!closeable}         type="button">
+    // (92:6) <button         slot="footer"         on:click={() => {           showModal = false;         }}         disabled={!closeable}         type="button">
     function create_footer_slot(ctx) {
     	let button;
     	let t;
@@ -1157,17 +1161,17 @@ var app = (function () {
     			button = element("button");
     			t = text("Confirm");
     			attr_dev(button, "slot", "footer");
-    			button.disabled = button_disabled_value = !/*closeable*/ ctx[2];
+    			button.disabled = button_disabled_value = !/*closeable*/ ctx[4];
     			attr_dev(button, "type", "button");
-    			add_location(button, file$2, 68, 6, 1323);
+    			add_location(button, file$2, 91, 6, 1941);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
     			append_dev(button, t);
-    			dispose = listen_dev(button, "click", /*click_handler_1*/ ctx[4], false, false, false);
+    			dispose = listen_dev(button, "click", /*click_handler_1*/ ctx[6], false, false, false);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*closeable*/ 4 && button_disabled_value !== (button_disabled_value = !/*closeable*/ ctx[2])) {
+    			if (dirty & /*closeable*/ 16 && button_disabled_value !== (button_disabled_value = !/*closeable*/ ctx[4])) {
     				prop_dev(button, "disabled", button_disabled_value);
     			}
     		},
@@ -1181,14 +1185,14 @@ var app = (function () {
     		block,
     		id: create_footer_slot.name,
     		type: "slot",
-    		source: "(69:6) <button         slot=\\\"footer\\\"         on:click={() => {           showModal = false;         }}         disabled={!closeable}         type=\\\"button\\\">",
+    		source: "(92:6) <button         slot=\\\"footer\\\"         on:click={() => {           showModal = false;         }}         disabled={!closeable}         type=\\\"button\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (57:4) <Modal       on:close={() => {         showModal = false;       }}       on:cancel={() => {         showModal = false;       }}       let:didAgree={closeable}>
+    // (80:4) <Modal       on:close={() => {         showModal = false;       }}       on:cancel={() => {         showModal = false;       }}       let:didAgree={closeable}>
     function create_default_slot(ctx) {
     	let t0;
     	let p;
@@ -1200,7 +1204,7 @@ var app = (function () {
     			p = element("p");
     			p.textContent = "this works";
     			t2 = space();
-    			add_location(p, file$2, 65, 6, 1242);
+    			add_location(p, file$2, 88, 6, 1860);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, t0, anchor);
@@ -1219,7 +1223,7 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(57:4) <Modal       on:close={() => {         showModal = false;       }}       on:cancel={() => {         showModal = false;       }}       let:didAgree={closeable}>",
+    		source: "(80:4) <Modal       on:close={() => {         showModal = false;       }}       on:cancel={() => {         showModal = false;       }}       let:didAgree={closeable}>",
     		ctx
     	});
 
@@ -1231,9 +1235,11 @@ var app = (function () {
     	let t0;
     	let button;
     	let t2;
+    	let t3;
+    	let textarea;
     	let current;
     	let dispose;
-    	let each_value = /*products*/ ctx[1];
+    	let each_value = /*products*/ ctx[2];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -1260,8 +1266,13 @@ var app = (function () {
     			button.textContent = "Show Modal";
     			t2 = space();
     			if (if_block) if_block.c();
-    			add_location(button, file$2, 48, 2, 920);
-    			add_location(main, file$2, 30, 0, 461);
+    			t3 = space();
+    			textarea = element("textarea");
+    			add_location(button, file$2, 71, 2, 1538);
+    			attr_dev(textarea, "rows", "10");
+    			textarea.value = /*text*/ ctx[1];
+    			add_location(textarea, file$2, 103, 2, 2146);
+    			add_location(main, file$2, 53, 0, 1079);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1277,12 +1288,18 @@ var app = (function () {
     			append_dev(main, button);
     			append_dev(main, t2);
     			if (if_block) if_block.m(main, null);
+    			append_dev(main, t3);
+    			append_dev(main, textarea);
     			current = true;
-    			dispose = listen_dev(button, "click", /*click_handler*/ ctx[3], false, false, false);
+
+    			dispose = [
+    				listen_dev(button, "click", /*click_handler*/ ctx[5], false, false, false),
+    				listen_dev(textarea, "keydown", /*transform*/ ctx[3], false, false, false)
+    			];
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*products, addToCart, deleteProduct*/ 2) {
-    				each_value = /*products*/ ctx[1];
+    			if (dirty & /*products, addToCart, deleteProduct*/ 4) {
+    				each_value = /*products*/ ctx[2];
     				validate_each_argument(each_value);
     				let i;
 
@@ -1317,7 +1334,7 @@ var app = (function () {
     					if_block = create_if_block$1(ctx);
     					if_block.c();
     					transition_in(if_block, 1);
-    					if_block.m(main, null);
+    					if_block.m(main, t3);
     				}
     			} else if (if_block) {
     				group_outros();
@@ -1327,6 +1344,10 @@ var app = (function () {
     				});
 
     				check_outros();
+    			}
+
+    			if (!current || dirty & /*text*/ 2) {
+    				prop_dev(textarea, "value", /*text*/ ctx[1]);
     			}
     		},
     		i: function intro(local) {
@@ -1353,7 +1374,7 @@ var app = (function () {
     			if (detaching) detach_dev(main);
     			destroy_each(each_blocks, detaching);
     			if (if_block) if_block.d();
-    			dispose();
+    			run_all(dispose);
     		}
     	};
 
@@ -1388,7 +1409,22 @@ var app = (function () {
     	];
 
     	let showModal = false;
+    	let text = "this is just some random dummy text";
     	let closeable = false;
+
+    	function transform(event) {
+    		if (event.which !== 9) {
+    			return;
+    		}
+
+    		event.preventDefault();
+    		const selectionStart = event.target.selectionStart;
+    		const selectionEnd = event.target.selectionEnd;
+    		const value = event.target.value;
+    		$$invalidate(1, text = value.slice(0, selectionStart) + value.slice(selectionStart, selectionEnd).toUpperCase() + value.slice(selectionEnd));
+
+    		tick();
+    	}
 
     	const click_handler = event => {
     		$$invalidate(0, showModal = true);
@@ -1407,20 +1443,24 @@ var app = (function () {
     	};
 
     	$$self.$capture_state = () => ({
+    		tick,
     		Product,
     		Modal,
     		products,
     		showModal,
+    		text,
     		closeable,
     		addToCart,
     		deleteProduct,
+    		transform,
     		console
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("products" in $$props) $$invalidate(1, products = $$props.products);
+    		if ("products" in $$props) $$invalidate(2, products = $$props.products);
     		if ("showModal" in $$props) $$invalidate(0, showModal = $$props.showModal);
-    		if ("closeable" in $$props) $$invalidate(2, closeable = $$props.closeable);
+    		if ("text" in $$props) $$invalidate(1, text = $$props.text);
+    		if ("closeable" in $$props) $$invalidate(4, closeable = $$props.closeable);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1429,7 +1469,9 @@ var app = (function () {
 
     	return [
     		showModal,
+    		text,
     		products,
+    		transform,
     		closeable,
     		click_handler,
     		click_handler_1,

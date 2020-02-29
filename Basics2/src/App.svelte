@@ -1,4 +1,5 @@
 <script>
+  import { tick } from "svelte";
   import Product from "./Product.svelte";
   import Modal from "./Modal.svelte";
 
@@ -17,6 +18,7 @@
   ];
 
   let showModal = false;
+  let text = "this is just some random dummy text";
 
   let closeable = false;
   function addToCart(event) {
@@ -25,6 +27,27 @@
 
   function deleteProduct(event) {
     console.log(event);
+  }
+
+  function transform(event) {
+    if (event.which !== 9) {
+      return;
+    }
+    event.preventDefault();
+
+    const selectionStart = event.target.selectionStart;
+    const selectionEnd = event.target.selectionEnd;
+    const value = event.target.value;
+
+    text =
+      value.slice(0, selectionStart) +
+      value.slice(selectionStart, selectionEnd).toUpperCase() +
+      value.slice(selectionEnd);
+
+    tick(() => {
+      event.target.selectionStart = selectionStart;
+      event.target.selectionEnd = selectionEnd;
+    });
   }
 </script>
 
@@ -77,5 +100,7 @@
       </button>
     </Modal>
   {/if}
+
+  <textarea rows="10" value={text} on:keydown={transform} />
 
 </main>
