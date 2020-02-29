@@ -1,9 +1,39 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import {
+    createEventDispatcher,
+    onMount,
+    onDestroy,
+    beforeUpdate,
+    afterUpdate
+  } from "svelte";
 
   const dispatch = createEventDispatcher();
 
   let agreed = false;
+  let autoscroll = false;
+
+  console.log("script executed");
+
+  onMount(() => {
+    console.log("mounted");
+  });
+
+  onDestroy(() => {
+    console.log("destroyed");
+  });
+
+  beforeUpdate(() => {
+    console.log("before update");
+    autoscroll = agreed;
+  });
+
+  afterUpdate(() => {
+    console.log("after update");
+    if (autoscroll) {
+      const modal = document.querySelector(".modal");
+      modal.scrollTo(0, modal.scrollHeight);
+    }
+  });
 </script>
 
 <style>
@@ -23,12 +53,12 @@
     top: 10vh;
     left: 10%;
     width: 80%;
-    max-height: 80vh;
+    max-height: 10vh;
     background: white;
     border-radius: 5px;
     z-index: 100;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-    overflow: hidden;
+    overflow: scroll;
   }
   header {
     border-bottom: 1px solid #ccc;
