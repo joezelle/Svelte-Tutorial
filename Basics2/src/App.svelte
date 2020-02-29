@@ -16,6 +16,8 @@
     }
   ];
 
+  let showModal = false;
+
   function addToCart(event) {
     console.log(event);
   }
@@ -43,9 +45,33 @@
       on:delete={deleteProduct} />
   {/each}
 
-  <Modal>
-    <h1 slot="header">hello there</h1>
-    <p>this works</p>
-    <button slot="footer" type="button">Confirm</button>
-  </Modal>
+  <button
+    on:click={event => {
+      showModal = true;
+    }}>
+    Show Modal
+  </button>
+
+  {#if showModal}
+    <Modal
+      on:close={() => {
+        showModal = false;
+      }}
+      on:cancel={() => {
+        showModal = false;
+      }}>
+      <h1 slot="header">hello there</h1>
+      <p>this works</p>
+      <!-- use on:click because it is a button type -->
+      <button
+        slot="footer"
+        on:click={() => {
+          showModal = false;
+        }}
+        type="button">
+        Confirm
+      </button>
+    </Modal>
+  {/if}
+
 </main>
