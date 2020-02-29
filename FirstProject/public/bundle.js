@@ -452,19 +452,24 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			button = element("button");
-    			t = text(/*caption*/ ctx[0]);
-    			attr_dev(button, "class", button_class_value = "" + (null_to_empty(/*mode*/ ctx[2]) + " svelte-1sqvy9u"));
-    			add_location(button, file$1, 89, 2, 1559);
+    			t = text(/*caption*/ ctx[1]);
+    			attr_dev(button, "class", button_class_value = "" + (null_to_empty(/*mode*/ ctx[3]) + " svelte-1sqvy9u"));
+    			attr_dev(button, "type", /*type*/ ctx[0]);
+    			add_location(button, file$1, 89, 2, 1581);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
     			append_dev(button, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*caption*/ 1) set_data_dev(t, /*caption*/ ctx[0]);
+    			if (dirty & /*caption*/ 2) set_data_dev(t, /*caption*/ ctx[1]);
 
-    			if (dirty & /*mode*/ 4 && button_class_value !== (button_class_value = "" + (null_to_empty(/*mode*/ ctx[2]) + " svelte-1sqvy9u"))) {
+    			if (dirty & /*mode*/ 8 && button_class_value !== (button_class_value = "" + (null_to_empty(/*mode*/ ctx[3]) + " svelte-1sqvy9u"))) {
     				attr_dev(button, "class", button_class_value);
+    			}
+
+    			if (dirty & /*type*/ 1) {
+    				attr_dev(button, "type", /*type*/ ctx[0]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -491,20 +496,20 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			a = element("a");
-    			t = text(/*caption*/ ctx[0]);
-    			attr_dev(a, "href", /*href*/ ctx[1]);
+    			t = text(/*caption*/ ctx[1]);
+    			attr_dev(a, "href", /*href*/ ctx[2]);
     			attr_dev(a, "class", "svelte-1sqvy9u");
-    			add_location(a, file$1, 87, 2, 1523);
+    			add_location(a, file$1, 87, 2, 1545);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
     			append_dev(a, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*caption*/ 1) set_data_dev(t, /*caption*/ ctx[0]);
+    			if (dirty & /*caption*/ 2) set_data_dev(t, /*caption*/ ctx[1]);
 
-    			if (dirty & /*href*/ 2) {
-    				attr_dev(a, "href", /*href*/ ctx[1]);
+    			if (dirty & /*href*/ 4) {
+    				attr_dev(a, "href", /*href*/ ctx[2]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -527,7 +532,7 @@ var app = (function () {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*href*/ ctx[1]) return create_if_block;
+    		if (/*href*/ ctx[2]) return create_if_block;
     		return create_else_block;
     	}
 
@@ -579,40 +584,43 @@ var app = (function () {
     }
 
     function instance($$self, $$props, $$invalidate) {
+    	let { type = "button" } = $$props;
     	let { caption } = $$props;
-    	let { href } = $$props;
-    	let { mode } = $$props;
-    	const writable_props = ["caption", "href", "mode"];
+    	let { href = null } = $$props;
+    	let { mode = null } = $$props;
+    	const writable_props = ["type", "caption", "href", "mode"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Button> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$set = $$props => {
-    		if ("caption" in $$props) $$invalidate(0, caption = $$props.caption);
-    		if ("href" in $$props) $$invalidate(1, href = $$props.href);
-    		if ("mode" in $$props) $$invalidate(2, mode = $$props.mode);
+    		if ("type" in $$props) $$invalidate(0, type = $$props.type);
+    		if ("caption" in $$props) $$invalidate(1, caption = $$props.caption);
+    		if ("href" in $$props) $$invalidate(2, href = $$props.href);
+    		if ("mode" in $$props) $$invalidate(3, mode = $$props.mode);
     	};
 
-    	$$self.$capture_state = () => ({ caption, href, mode });
+    	$$self.$capture_state = () => ({ type, caption, href, mode });
 
     	$$self.$inject_state = $$props => {
-    		if ("caption" in $$props) $$invalidate(0, caption = $$props.caption);
-    		if ("href" in $$props) $$invalidate(1, href = $$props.href);
-    		if ("mode" in $$props) $$invalidate(2, mode = $$props.mode);
+    		if ("type" in $$props) $$invalidate(0, type = $$props.type);
+    		if ("caption" in $$props) $$invalidate(1, caption = $$props.caption);
+    		if ("href" in $$props) $$invalidate(2, href = $$props.href);
+    		if ("mode" in $$props) $$invalidate(3, mode = $$props.mode);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [caption, href, mode];
+    	return [type, caption, href, mode];
     }
 
     class Button extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance, create_fragment$1, safe_not_equal, { caption: 0, href: 1, mode: 2 });
+    		init(this, options, instance, create_fragment$1, safe_not_equal, { type: 0, caption: 1, href: 2, mode: 3 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -624,17 +632,17 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*caption*/ ctx[0] === undefined && !("caption" in props)) {
+    		if (/*caption*/ ctx[1] === undefined && !("caption" in props)) {
     			console.warn("<Button> was created without expected prop 'caption'");
     		}
+    	}
 
-    		if (/*href*/ ctx[1] === undefined && !("href" in props)) {
-    			console.warn("<Button> was created without expected prop 'href'");
-    		}
+    	get type() {
+    		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
 
-    		if (/*mode*/ ctx[2] === undefined && !("mode" in props)) {
-    			console.warn("<Button> was created without expected prop 'mode'");
-    		}
+    	set type(value) {
+    		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
     	get caption() {
@@ -1227,7 +1235,7 @@ var app = (function () {
     			attr_dev(input, "id", /*id*/ ctx[1]);
     			input.value = /*value*/ ctx[4];
     			attr_dev(input, "class", "svelte-10fbh92");
-    			add_location(input, file$4, 47, 4, 876);
+    			add_location(input, file$4, 47, 4, 899);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, input, anchor);
@@ -1275,7 +1283,7 @@ var app = (function () {
     			attr_dev(textarea, "id", /*id*/ ctx[1]);
     			textarea.value = /*value*/ ctx[4];
     			attr_dev(textarea, "class", "svelte-10fbh92");
-    			add_location(textarea, file$4, 45, 4, 818);
+    			add_location(textarea, file$4, 45, 4, 841);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, textarea, anchor);
@@ -1334,9 +1342,9 @@ var app = (function () {
     			if_block.c();
     			attr_dev(label_1, "for", /*id*/ ctx[1]);
     			attr_dev(label_1, "class", "svelte-10fbh92");
-    			add_location(label_1, file$4, 43, 2, 745);
+    			add_location(label_1, file$4, 43, 2, 768);
     			attr_dev(div, "class", "form-control svelte-10fbh92");
-    			add_location(div, file$4, 42, 0, 715);
+    			add_location(div, file$4, 42, 0, 738);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1387,12 +1395,12 @@ var app = (function () {
     }
 
     function instance$3($$self, $$props, $$invalidate) {
-    	let { controlType } = $$props;
+    	let { controlType = null } = $$props;
     	let { id } = $$props;
     	let { label } = $$props;
-    	let { rows } = $$props;
+    	let { rows = null } = $$props;
     	let { value } = $$props;
-    	let { type } = $$props;
+    	let { type = "text" } = $$props;
     	const writable_props = ["controlType", "id", "label", "rows", "value", "type"];
 
     	Object.keys($$props).forEach(key => {
@@ -1464,10 +1472,6 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*controlType*/ ctx[0] === undefined && !("controlType" in props)) {
-    			console.warn("<TextInput> was created without expected prop 'controlType'");
-    		}
-
     		if (/*id*/ ctx[1] === undefined && !("id" in props)) {
     			console.warn("<TextInput> was created without expected prop 'id'");
     		}
@@ -1476,16 +1480,8 @@ var app = (function () {
     			console.warn("<TextInput> was created without expected prop 'label'");
     		}
 
-    		if (/*rows*/ ctx[3] === undefined && !("rows" in props)) {
-    			console.warn("<TextInput> was created without expected prop 'rows'");
-    		}
-
     		if (/*value*/ ctx[4] === undefined && !("value" in props)) {
     			console.warn("<TextInput> was created without expected prop 'value'");
-    		}
-
-    		if (/*type*/ ctx[5] === undefined && !("type" in props)) {
-    			console.warn("<TextInput> was created without expected prop 'type'");
     		}
     	}
 
@@ -1571,7 +1567,6 @@ var app = (function () {
     			props: {
     				id: "subtitle",
     				label: "subtitle",
-    				type: "text",
     				value: /*subtitle*/ ctx[1]
     			},
     			$$inline: true
@@ -1583,7 +1578,6 @@ var app = (function () {
     			props: {
     				id: "address",
     				label: "address",
-    				type: "text",
     				value: /*address*/ ctx[4]
     			},
     			$$inline: true
@@ -1595,7 +1589,6 @@ var app = (function () {
     			props: {
     				id: "imageUrl",
     				label: "imageUrl",
-    				type: "text",
     				value: /*imageUrl*/ ctx[5]
     			},
     			$$inline: true
