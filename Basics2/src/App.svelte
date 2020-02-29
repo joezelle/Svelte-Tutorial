@@ -18,6 +18,7 @@
 
   let showModal = false;
 
+  let closeable = false;
   function addToCart(event) {
     console.log(event);
   }
@@ -59,15 +60,18 @@
       }}
       on:cancel={() => {
         showModal = false;
-      }}>
+      }}
+      let:didAgree={closeable}>
       <h1 slot="header">hello there</h1>
       <p>this works</p>
+
       <!-- use on:click because it is a button type -->
       <button
         slot="footer"
         on:click={() => {
           showModal = false;
         }}
+        disabled={!closeable}
         type="button">
         Confirm
       </button>
