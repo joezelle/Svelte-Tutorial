@@ -3,6 +3,7 @@
   export let href = null;
   export let mode = null;
   export let color = null;
+  export let newclass = null;
 </script>
 
 <style>
@@ -78,6 +79,10 @@
     color: #01a129;
   }
 
+  .save {
+    float: right
+  }
+
   .outline.success:hover,
   .outline.success:active {
     background: #c2ffd1;
@@ -89,7 +94,7 @@
     <slot />
   </a>
 {:else}
-  <button class="{mode} {color} {type}" on:click>
+  <button class="{mode} {color} {newclass} {type}" on:click>
     <slot />
   </button>
 {/if}
