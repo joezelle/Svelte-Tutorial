@@ -3,15 +3,31 @@
   import TextInput from "../UI/TextInput.svelte";
   import Button from "../UI/Button.svelte";
   import Modal from "../UI/Modal.svelte";
+  import { isEmpty, isEmail } from "../helpers/validation.js";
 
   let title = "";
+  let titleValid = false;
   let subtitle = "";
+  let subtitleValid = false;
   let description = "";
+  let descriptionValid = false;
   let email = "";
+  let emailValid = false;
+  let isValidEmail = false;
   let address = "";
+  let addressValid = false;
   let imageUrl = "";
+  let imageUrlValid = false;
 
   const dispatch = createEventDispatcher();
+
+  $: titleValid = !isEmpty(title);
+  $: subtitleValid = !isEmpty(subtitle);
+  $: descriptionValid = !isEmpty(description);
+  // $: emailValid = !isEmpty(email);
+  $: addressValid = !isEmpty(address);
+  $: imageUrlValid = !isEmpty(imageUrl);
+  $: isValidEmail = !isEmail(email);
 
   function submitForm() {
     dispatch("save", {
@@ -41,27 +57,37 @@
       <TextInput
         id="title"
         label="title"
+        valid={titleValid}
+        errorMessage="please enter a valid title"
         value={title}
         on:input={event => (title = event.target.value)} />
       <TextInput
         id="subtitle"
         label="subtitle"
+        valid={subtitleValid}
+        errorMessage="please enter a valid subtitle"
         value={subtitle}
         on:input={event => (subtitle = event.target.value)} />
       <TextInput
         id="address"
         label="address"
+        valid={addressValid}
+        errorMessage="please enter a valid address"
         value={address}
         on:input={event => (address = event.target.value)} />
       <TextInput
         id="imageUrl"
         label="imageUrl"
+        valid={imageUrlValid}
+        errorMessage="please enter a valid link"
         value={imageUrl}
         on:input={event => (imageUrl = event.target.value)} />
       <TextInput
         id="email"
         label="email"
         type="email"
+        valid={emailValid}
+        errorMessage="please enter a valid email"
         value={email}
         on:input={event => (email = event.target.value)} />
       <TextInput

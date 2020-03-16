@@ -47,6 +47,13 @@ var app = (function () {
         node.addEventListener(event, handler, options);
         return () => node.removeEventListener(event, handler, options);
     }
+    function prevent_default(fn) {
+        return function (event) {
+            event.preventDefault();
+            // @ts-ignore
+            return fn.call(this, event);
+        };
+    }
     function attr(node, attribute, value) {
         if (value == null)
             node.removeAttribute(attribute);
@@ -94,6 +101,15 @@ var app = (function () {
     let current_component;
     function set_current_component(component) {
         current_component = component;
+    }
+    // TODO figure out if we still want to support
+    // shorthand events, or if we want to implement
+    // a real bubbling mechanism
+    function bubble(component, event) {
+        const callbacks = component.$$.callbacks[event.type];
+        if (callbacks) {
+            callbacks.slice().forEach(fn => fn(event));
+        }
     }
 
     const dirty_components = [];
@@ -652,11 +668,22 @@ var app = (function () {
     	let option0;
     	let option1;
     	let option2;
+    	let t26;
+    	let input10;
+    	let t27;
+    	let button0;
+    	let t29;
+    	let form;
+    	let input11;
+    	let t30;
+    	let button1;
+    	let t31;
+    	let button1_disabled_value;
     	let current;
     	let dispose;
 
     	function custominput_val_binding(value) {
-    		/*custominput_val_binding*/ ctx[6].call(null, value);
+    		/*custominput_val_binding*/ ctx[11].call(null, value);
     	}
 
     	let custominput_props = {};
@@ -669,7 +696,7 @@ var app = (function () {
     	binding_callbacks.push(() => bind(custominput, "val", custominput_val_binding));
 
     	function toggle_chosenOption_binding(value) {
-    		/*toggle_chosenOption_binding*/ ctx[7].call(null, value);
+    		/*toggle_chosenOption_binding*/ ctx[12].call(null, value);
     	}
 
     	let toggle_props = {};
@@ -683,7 +710,7 @@ var app = (function () {
 
     	function input0_input_handler() {
     		input0_updating = true;
-    		/*input0_input_handler*/ ctx[8].call(input0);
+    		/*input0_input_handler*/ ctx[13].call(input0);
     	}
 
     	const block = {
@@ -741,81 +768,103 @@ var app = (function () {
     			option1.textContent = "cobalt";
     			option2 = element("option");
     			option2.textContent = "Sapphire";
-    			add_location(p, file$2, 22, 2, 470);
+    			t26 = space();
+    			input10 = element("input");
+    			t27 = space();
+    			button0 = element("button");
+    			button0.textContent = "Save";
+    			t29 = space();
+    			form = element("form");
+    			input11 = element("input");
+    			t30 = space();
+    			button1 = element("button");
+    			t31 = text("Save");
+    			add_location(p, file$2, 35, 2, 714);
     			attr_dev(input0, "type", "number");
-    			add_location(input0, file$2, 27, 2, 583);
+    			add_location(input0, file$2, 40, 2, 827);
     			attr_dev(input1, "type", "checkbox");
-    			add_location(input1, file$2, 32, 4, 732);
-    			add_location(label0, file$2, 31, 2, 720);
+    			add_location(input1, file$2, 45, 4, 976);
+    			add_location(label0, file$2, 44, 2, 964);
     			attr_dev(input2, "type", "radio");
     			input2.__value = "blue";
     			input2.value = input2.__value;
     			attr_dev(input2, "name", /*favColor*/ ctx[4]);
-    			/*$$binding_groups*/ ctx[11][0].push(input2);
-    			add_location(input2, file$2, 39, 4, 880);
-    			add_location(label1, file$2, 38, 2, 868);
+    			/*$$binding_groups*/ ctx[16][0].push(input2);
+    			add_location(input2, file$2, 52, 4, 1124);
+    			add_location(label1, file$2, 51, 2, 1112);
     			attr_dev(input3, "type", "radio");
     			input3.__value = "white";
     			input3.value = input3.__value;
     			attr_dev(input3, "name", /*favColor*/ ctx[4]);
-    			/*$$binding_groups*/ ctx[11][0].push(input3);
-    			add_location(input3, file$2, 43, 4, 988);
-    			add_location(label2, file$2, 42, 2, 976);
+    			/*$$binding_groups*/ ctx[16][0].push(input3);
+    			add_location(input3, file$2, 56, 4, 1232);
+    			add_location(label2, file$2, 55, 2, 1220);
     			attr_dev(input4, "type", "radio");
     			input4.__value = "black";
     			input4.value = input4.__value;
     			attr_dev(input4, "name", /*favColor*/ ctx[4]);
-    			/*$$binding_groups*/ ctx[11][0].push(input4);
-    			add_location(input4, file$2, 47, 4, 1098);
-    			add_location(label3, file$2, 46, 2, 1086);
+    			/*$$binding_groups*/ ctx[16][0].push(input4);
+    			add_location(input4, file$2, 60, 4, 1342);
+    			add_location(label3, file$2, 59, 2, 1330);
     			attr_dev(input5, "type", "radio");
     			input5.__value = "cobalt";
     			input5.value = input5.__value;
     			attr_dev(input5, "name", /*favColor*/ ctx[4]);
-    			/*$$binding_groups*/ ctx[11][0].push(input5);
-    			add_location(input5, file$2, 51, 4, 1208);
-    			add_location(label4, file$2, 50, 2, 1196);
+    			/*$$binding_groups*/ ctx[16][0].push(input5);
+    			add_location(input5, file$2, 64, 4, 1452);
+    			add_location(label4, file$2, 63, 2, 1440);
     			attr_dev(input6, "type", "checkbox");
     			input6.__value = "blue";
     			input6.value = input6.__value;
     			attr_dev(input6, "name", /*favColor*/ ctx[4]);
-    			/*$$binding_groups*/ ctx[11][0].push(input6);
-    			add_location(input6, file$2, 57, 4, 1349);
-    			add_location(label5, file$2, 56, 2, 1337);
+    			/*$$binding_groups*/ ctx[16][0].push(input6);
+    			add_location(input6, file$2, 70, 4, 1593);
+    			add_location(label5, file$2, 69, 2, 1581);
     			attr_dev(input7, "type", "checkbox");
     			input7.__value = "white";
     			input7.value = input7.__value;
     			attr_dev(input7, "name", /*favColor*/ ctx[4]);
-    			/*$$binding_groups*/ ctx[11][0].push(input7);
-    			add_location(input7, file$2, 61, 4, 1460);
-    			add_location(label6, file$2, 60, 2, 1448);
+    			/*$$binding_groups*/ ctx[16][0].push(input7);
+    			add_location(input7, file$2, 74, 4, 1704);
+    			add_location(label6, file$2, 73, 2, 1692);
     			attr_dev(input8, "type", "checkbox");
     			input8.__value = "black";
     			input8.value = input8.__value;
     			attr_dev(input8, "name", /*favColor*/ ctx[4]);
-    			/*$$binding_groups*/ ctx[11][0].push(input8);
-    			add_location(input8, file$2, 69, 4, 1597);
-    			add_location(label7, file$2, 68, 2, 1585);
+    			/*$$binding_groups*/ ctx[16][0].push(input8);
+    			add_location(input8, file$2, 82, 4, 1841);
+    			add_location(label7, file$2, 81, 2, 1829);
     			attr_dev(input9, "type", "checkbox");
     			input9.__value = "cobalt";
     			input9.value = input9.__value;
     			attr_dev(input9, "name", /*favColor*/ ctx[4]);
-    			/*$$binding_groups*/ ctx[11][0].push(input9);
-    			add_location(input9, file$2, 77, 4, 1734);
-    			add_location(label8, file$2, 76, 2, 1722);
+    			/*$$binding_groups*/ ctx[16][0].push(input9);
+    			add_location(input9, file$2, 90, 4, 1978);
+    			add_location(label8, file$2, 89, 2, 1966);
     			option0.__value = "blue";
     			option0.value = option0.__value;
-    			add_location(option0, file$2, 88, 4, 1928);
+    			add_location(option0, file$2, 101, 4, 2172);
     			option1.__value = "cobalt";
     			option1.value = option1.__value;
-    			add_location(option1, file$2, 89, 4, 1967);
+    			add_location(option1, file$2, 102, 4, 2211);
     			option2.__value = "Sapphire";
     			option2.value = option2.__value;
-    			add_location(option2, file$2, 90, 4, 2010);
+    			add_location(option2, file$2, 103, 4, 2254);
     			attr_dev(select, "id", "");
-    			if (/*selectedItem*/ ctx[5] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[19].call(select));
-    			add_location(select, file$2, 87, 2, 1883);
-    			add_location(main, file$2, 20, 0, 427);
+    			if (/*selectedItem*/ ctx[5] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[24].call(select));
+    			add_location(select, file$2, 100, 2, 2127);
+    			attr_dev(input10, "type", "text");
+    			add_location(input10, file$2, 109, 2, 2388);
+    			add_location(button0, file$2, 110, 2, 2438);
+    			attr_dev(input11, "type", "email");
+    			attr_dev(input11, "name", "");
+    			attr_dev(input11, "id", "");
+    			add_location(input11, file$2, 117, 4, 2568);
+    			attr_dev(button1, "type", "submit");
+    			button1.disabled = button1_disabled_value = !/*formIsValid*/ ctx[8];
+    			add_location(button1, file$2, 118, 4, 2635);
+    			add_location(form, file$2, 116, 2, 2532);
+    			add_location(main, file$2, 33, 0, 671);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -882,20 +931,35 @@ var app = (function () {
     			append_dev(select, option1);
     			append_dev(select, option2);
     			select_option(select, /*selectedItem*/ ctx[5]);
+    			append_dev(main, t26);
+    			append_dev(main, input10);
+    			/*input10_binding*/ ctx[25](input10);
+    			append_dev(main, t27);
+    			append_dev(main, button0);
+    			append_dev(main, t29);
+    			append_dev(main, form);
+    			append_dev(form, input11);
+    			set_input_value(input11, /*enteredEmail*/ ctx[7]);
+    			append_dev(form, t30);
+    			append_dev(form, button1);
+    			append_dev(button1, t31);
     			current = true;
 
     			dispose = [
     				listen_dev(input0, "input", input0_input_handler),
-    				listen_dev(input1, "change", /*input1_change_handler*/ ctx[9]),
-    				listen_dev(input2, "change", /*input2_change_handler*/ ctx[10]),
-    				listen_dev(input3, "change", /*input3_change_handler*/ ctx[12]),
-    				listen_dev(input4, "change", /*input4_change_handler*/ ctx[13]),
-    				listen_dev(input5, "change", /*input5_change_handler*/ ctx[14]),
-    				listen_dev(input6, "change", /*input6_change_handler*/ ctx[15]),
-    				listen_dev(input7, "change", /*input7_change_handler*/ ctx[16]),
-    				listen_dev(input8, "change", /*input8_change_handler*/ ctx[17]),
-    				listen_dev(input9, "change", /*input9_change_handler*/ ctx[18]),
-    				listen_dev(select, "change", /*select_change_handler*/ ctx[19])
+    				listen_dev(input1, "change", /*input1_change_handler*/ ctx[14]),
+    				listen_dev(input2, "change", /*input2_change_handler*/ ctx[15]),
+    				listen_dev(input3, "change", /*input3_change_handler*/ ctx[17]),
+    				listen_dev(input4, "change", /*input4_change_handler*/ ctx[18]),
+    				listen_dev(input5, "change", /*input5_change_handler*/ ctx[19]),
+    				listen_dev(input6, "change", /*input6_change_handler*/ ctx[20]),
+    				listen_dev(input7, "change", /*input7_change_handler*/ ctx[21]),
+    				listen_dev(input8, "change", /*input8_change_handler*/ ctx[22]),
+    				listen_dev(input9, "change", /*input9_change_handler*/ ctx[23]),
+    				listen_dev(select, "change", /*select_change_handler*/ ctx[24]),
+    				listen_dev(button0, "click", /*saveData*/ ctx[9], false, false, false),
+    				listen_dev(input11, "input", /*input11_input_handler*/ ctx[26]),
+    				listen_dev(form, "submit", prevent_default(/*submit_handler*/ ctx[10]), false, true, false)
     			];
     		},
     		p: function update(ctx, [dirty]) {
@@ -996,6 +1060,14 @@ var app = (function () {
     			if (dirty & /*selectedItem*/ 32) {
     				select_option(select, /*selectedItem*/ ctx[5]);
     			}
+
+    			if (dirty & /*enteredEmail*/ 128 && input11.value !== /*enteredEmail*/ ctx[7]) {
+    				set_input_value(input11, /*enteredEmail*/ ctx[7]);
+    			}
+
+    			if (!current || dirty & /*formIsValid*/ 256 && button1_disabled_value !== (button1_disabled_value = !/*formIsValid*/ ctx[8])) {
+    				prop_dev(button1, "disabled", button1_disabled_value);
+    			}
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -1012,14 +1084,15 @@ var app = (function () {
     			if (detaching) detach_dev(main);
     			destroy_component(custominput);
     			destroy_component(toggle);
-    			/*$$binding_groups*/ ctx[11][0].splice(/*$$binding_groups*/ ctx[11][0].indexOf(input2), 1);
-    			/*$$binding_groups*/ ctx[11][0].splice(/*$$binding_groups*/ ctx[11][0].indexOf(input3), 1);
-    			/*$$binding_groups*/ ctx[11][0].splice(/*$$binding_groups*/ ctx[11][0].indexOf(input4), 1);
-    			/*$$binding_groups*/ ctx[11][0].splice(/*$$binding_groups*/ ctx[11][0].indexOf(input5), 1);
-    			/*$$binding_groups*/ ctx[11][0].splice(/*$$binding_groups*/ ctx[11][0].indexOf(input6), 1);
-    			/*$$binding_groups*/ ctx[11][0].splice(/*$$binding_groups*/ ctx[11][0].indexOf(input7), 1);
-    			/*$$binding_groups*/ ctx[11][0].splice(/*$$binding_groups*/ ctx[11][0].indexOf(input8), 1);
-    			/*$$binding_groups*/ ctx[11][0].splice(/*$$binding_groups*/ ctx[11][0].indexOf(input9), 1);
+    			/*$$binding_groups*/ ctx[16][0].splice(/*$$binding_groups*/ ctx[16][0].indexOf(input2), 1);
+    			/*$$binding_groups*/ ctx[16][0].splice(/*$$binding_groups*/ ctx[16][0].indexOf(input3), 1);
+    			/*$$binding_groups*/ ctx[16][0].splice(/*$$binding_groups*/ ctx[16][0].indexOf(input4), 1);
+    			/*$$binding_groups*/ ctx[16][0].splice(/*$$binding_groups*/ ctx[16][0].indexOf(input5), 1);
+    			/*$$binding_groups*/ ctx[16][0].splice(/*$$binding_groups*/ ctx[16][0].indexOf(input6), 1);
+    			/*$$binding_groups*/ ctx[16][0].splice(/*$$binding_groups*/ ctx[16][0].indexOf(input7), 1);
+    			/*$$binding_groups*/ ctx[16][0].splice(/*$$binding_groups*/ ctx[16][0].indexOf(input8), 1);
+    			/*$$binding_groups*/ ctx[16][0].splice(/*$$binding_groups*/ ctx[16][0].indexOf(input9), 1);
+    			/*input10_binding*/ ctx[25](null);
     			run_all(dispose);
     		}
     	};
@@ -1042,7 +1115,19 @@ var app = (function () {
     	let agreed;
     	let favColor = "blue";
     	let selectedItem;
+    	let usernameInput;
+    	let enteredEmail = "";
+    	let formIsValid = false;
+
+    	function saveData() {
+    		console.log(usernameInput.value);
+    	}
+
     	const $$binding_groups = [[]];
+
+    	function submit_handler(event) {
+    		bubble($$self, event);
+    	}
 
     	function custominput_val_binding(value) {
     		name = value;
@@ -1109,6 +1194,17 @@ var app = (function () {
     		$$invalidate(5, selectedItem);
     	}
 
+    	function input10_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			$$invalidate(6, usernameInput = $$value);
+    		});
+    	}
+
+    	function input11_input_handler() {
+    		enteredEmail = this.value;
+    		$$invalidate(7, enteredEmail);
+    	}
+
     	$$self.$capture_state = () => ({
     		CustomInput,
     		Toggle,
@@ -1118,6 +1214,10 @@ var app = (function () {
     		agreed,
     		favColor,
     		selectedItem,
+    		usernameInput,
+    		enteredEmail,
+    		formIsValid,
+    		saveData,
     		console
     	});
 
@@ -1128,6 +1228,9 @@ var app = (function () {
     		if ("agreed" in $$props) $$invalidate(3, agreed = $$props.agreed);
     		if ("favColor" in $$props) $$invalidate(4, favColor = $$props.favColor);
     		if ("selectedItem" in $$props) $$invalidate(5, selectedItem = $$props.selectedItem);
+    		if ("usernameInput" in $$props) $$invalidate(6, usernameInput = $$props.usernameInput);
+    		if ("enteredEmail" in $$props) $$invalidate(7, enteredEmail = $$props.enteredEmail);
+    		if ("formIsValid" in $$props) $$invalidate(8, formIsValid = $$props.formIsValid);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1135,6 +1238,14 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*enteredEmail*/ 128) {
+    			 if (enteredEmail.includes("@")) {
+    				$$invalidate(8, formIsValid = true);
+    			} else {
+    				$$invalidate(8, formIsValid = false);
+    			}
+    		}
+
     		if ($$self.$$.dirty & /*selectedOption*/ 2) {
     			//   for checkboxes
     			//let favColor = ["blue"];
@@ -1165,6 +1276,11 @@ var app = (function () {
     		agreed,
     		favColor,
     		selectedItem,
+    		usernameInput,
+    		enteredEmail,
+    		formIsValid,
+    		saveData,
+    		submit_handler,
     		custominput_val_binding,
     		toggle_chosenOption_binding,
     		input0_input_handler,
@@ -1178,7 +1294,9 @@ var app = (function () {
     		input7_change_handler,
     		input8_change_handler,
     		input9_change_handler,
-    		select_change_handler
+    		select_change_handler,
+    		input10_binding,
+    		input11_input_handler
     	];
     }
 

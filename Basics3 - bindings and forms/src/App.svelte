@@ -8,6 +8,15 @@
   let agreed;
   let favColor = "blue";
   let selectedItem;
+  let usernameInput;
+  let enteredEmail = "";
+  let formIsValid = false;
+
+  $: if (enteredEmail.includes("@")) {
+    formIsValid = true;
+  } else {
+    formIsValid = false;
+  }
   //   for checkboxes
   //let favColor = ["blue"];
 
@@ -16,6 +25,10 @@
   $: console.log(agreed);
   $: console.log(favColor);
   $: console.log(selectedItem);
+
+  function saveData() {
+    console.log(usernameInput.value);
+  }
 </script>
 
 <main>
@@ -91,4 +104,18 @@
     <option value="Sapphire">Sapphire</option>
   </select>
 
+  <!-- Element ref -->
+  <!-- getting value without using 2way binding -->
+
+  <input type="text" bind:this={usernameInput} />
+  <button on:click={saveData}>Save</button>
+
+  <!-- component ref -->
+
+  <!-- validation -->
+
+  <form on:submit|preventDefault>
+    <input type="email" name="" id="" bind:value={enteredEmail} />
+    <button type="submit" disabled={!formIsValid}>Save</button>
+  </form>
 </main>
