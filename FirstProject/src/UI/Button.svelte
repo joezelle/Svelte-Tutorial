@@ -4,6 +4,7 @@
   export let mode = null;
   export let color = null;
   export let newclass = null;
+  export let disabled = false;
 </script>
 
 <style>
@@ -94,7 +95,7 @@
     <slot />
   </a>
 {:else}
-  <button class="{mode} {color} {newclass} {type}" on:click>
+  <button class="{mode} {color} {newclass}" {disabled} {type} on:click>
     <slot />
   </button>
 {/if}

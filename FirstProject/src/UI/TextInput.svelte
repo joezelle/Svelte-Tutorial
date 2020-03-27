@@ -2,7 +2,7 @@
   export let controlType = null;
   export let id;
   export let label;
-  //export let rows = null;
+  export let rows = null;
   export let value;
   export let type = "text";
   export let valid = true;
@@ -60,8 +60,8 @@
     <textarea
       class:invalid={!valid}
       {id}
-      {value}
-      on:input
+      {rows}
+      bind:value
       on:input
       on:blur={() => (touched = true)} />
   {:else}
