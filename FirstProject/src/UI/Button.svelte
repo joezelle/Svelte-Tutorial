@@ -80,7 +80,7 @@
   }
 
   .save {
-    float: right
+    float: right;
   }
 
   .outline.success:hover,

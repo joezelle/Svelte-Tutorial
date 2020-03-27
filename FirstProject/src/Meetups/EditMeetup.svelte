@@ -24,7 +24,7 @@
   $: titleValid = !isEmpty(title);
   $: subtitleValid = !isEmpty(subtitle);
   $: descriptionValid = !isEmpty(description);
-  // $: emailValid = !isEmpty(email);
+  //$: emailValid = !isEmpty(email);
   $: addressValid = !isEmpty(address);
   $: imageUrlValid = !isEmpty(imageUrl);
   $: isValidEmail = !isEmail(email);
@@ -86,7 +86,7 @@
         id="email"
         label="email"
         type="email"
-        valid={emailValid}
+        valid={isValidEmail}
         errorMessage="please enter a valid email"
         value={email}
         on:input={event => (email = event.target.value)} />
