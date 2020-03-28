@@ -30,6 +30,21 @@ var app = (function () {
     function safe_not_equal(a, b) {
         return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
     }
+    function validate_store(store, name) {
+        if (store != null && typeof store.subscribe !== 'function') {
+            throw new Error(`'${name}' is not a store with a 'subscribe' method`);
+        }
+    }
+    function subscribe(store, ...callbacks) {
+        if (store == null) {
+            return noop;
+        }
+        const unsub = store.subscribe(...callbacks);
+        return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+    }
+    function component_subscribe(component, store, callback) {
+        component.$$.on_destroy.push(subscribe(store, callback));
+    }
     function create_slot(definition, ctx, $$scope, fn) {
         if (definition) {
             const slot_ctx = get_slot_context(definition, ctx, $$scope, fn);
@@ -447,6 +462,118 @@ var app = (function () {
         $capture_state() { }
         $inject_state() { }
     }
+
+    const subscriber_queue = [];
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param {*=}value initial value
+     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+     */
+    function writable(value, start = noop) {
+        let stop;
+        const subscribers = [];
+        function set(new_value) {
+            if (safe_not_equal(value, new_value)) {
+                value = new_value;
+                if (stop) { // store is ready
+                    const run_queue = !subscriber_queue.length;
+                    for (let i = 0; i < subscribers.length; i += 1) {
+                        const s = subscribers[i];
+                        s[1]();
+                        subscriber_queue.push(s, value);
+                    }
+                    if (run_queue) {
+                        for (let i = 0; i < subscriber_queue.length; i += 2) {
+                            subscriber_queue[i][0](subscriber_queue[i + 1]);
+                        }
+                        subscriber_queue.length = 0;
+                    }
+                }
+            }
+        }
+        function update(fn) {
+            set(fn(value));
+        }
+        function subscribe(run, invalidate = noop) {
+            const subscriber = [run, invalidate];
+            subscribers.push(subscriber);
+            if (subscribers.length === 1) {
+                stop = start(set) || noop;
+            }
+            run(value);
+            return () => {
+                const index = subscribers.indexOf(subscriber);
+                if (index !== -1) {
+                    subscribers.splice(index, 1);
+                }
+                if (subscribers.length === 0) {
+                    stop();
+                    stop = null;
+                }
+            };
+        }
+        return { set, update, subscribe };
+    }
+
+    const meetups = writable([
+      {
+        id: "meet1",
+        title: "Coding Bootcamp",
+        subtitle: "Learn to code in 30 Minutes",
+        description: "In this meetup, we will have some experts that teach",
+        imageUrl:
+          "https://elevenfifty.org/wp-content/uploads/2017/04/Coding-Bootcamp-1-880x499.jpg",
+        address: "27the Nerd Road,  32523 New York",
+        contactEmail: "testing-testing@eamail.com",
+        isFavorite: false
+      },
+      {
+        id: "meet2",
+        title: "Boys Night Out",
+        subtitle: "Boys Stepping Out",
+        description: "Time for the real Gees to have some good time, bro-bonding",
+        imageUrl:
+          "https://www.partner-kz.com/wp-content/uploads/2019/01/Great-Boys%E2%80%99-Night-Out.jpg",
+        address: "1020 ParkEast Road,  32523 Las Vegas",
+        contactEmail: "testing@eamail.com",
+        isFavorite: false
+      },
+      {
+        id: "meet3",
+        title: "Double Date",
+        subtitle: "First of its Kind",
+        description: "Its time for that double date amongs the lovers",
+        imageUrl:
+          "https://www.liberaldictionary.com/wp-content/uploads/2018/12/double-date.jpg",
+        address: "2234 Starklet Road,  32523 Los Angeles",
+        contactEmail: "testing-testing@eamail.com",
+        isFavorite: false
+      }
+    ]);
+
+    const customMeetUpStore = {
+      subscribe: meetups.subscribe,
+      addMeetup: meetupData => {
+        const newMeetup = {
+          ...meetupData,
+          id: Math.random().toString(),
+          isFavorite: false
+        };
+        meetups.update(items => {
+          return [newMeetup, ...items];
+        });
+      },
+      toggleFavorite: id => {
+        meetups.update(items => {
+          const updatedMeetup = { ...items.find(m => m.id === id) };
+          updatedMeetup.isFavorite = !updatedMeetup.isFavorite;
+          const meetupIndex = items.findIndex(m => m.id === id);
+          const updatedMeetups = [...items];
+          updatedMeetups[meetupIndex] = updatedMeetup;
+          return updatedMeetups;
+        });
+      }
+    };
 
     /* src\UI\Header.svelte generated by Svelte v3.19.1 */
 
@@ -3056,7 +3183,7 @@ var app = (function () {
     /* src\App.svelte generated by Svelte v3.19.1 */
     const file$8 = "src\\App.svelte";
 
-    // (91:4) <Button on:click={() => (editMode = 'new')}>
+    // (53:4) <Button on:click={() => (editMode = 'new')}>
     function create_default_slot$3(ctx) {
     	let t;
 
@@ -3076,19 +3203,19 @@ var app = (function () {
     		block,
     		id: create_default_slot$3.name,
     		type: "slot",
-    		source: "(91:4) <Button on:click={() => (editMode = 'new')}>",
+    		source: "(53:4) <Button on:click={() => (editMode = 'new')}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (93:2) {#if editMode === 'new'}
+    // (55:2) {#if editMode === 'new'}
     function create_if_block$3(ctx) {
     	let current;
     	const editmeetup = new EditMeetup({ $$inline: true });
     	editmeetup.$on("save", /*addMeetup*/ ctx[2]);
-    	editmeetup.$on("cancel", /*cancelEdit*/ ctx[4]);
+    	editmeetup.$on("cancel", /*cancelEdit*/ ctx[3]);
 
     	const block = {
     		c: function create() {
@@ -3117,7 +3244,7 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(93:2) {#if editMode === 'new'}",
+    		source: "(55:2) {#if editMode === 'new'}",
     		ctx
     	});
 
@@ -3141,15 +3268,15 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	button.$on("click", /*click_handler*/ ctx[5]);
-    	let if_block = /*editMode*/ ctx[1] === "new" && create_if_block$3(ctx);
+    	button.$on("click", /*click_handler*/ ctx[4]);
+    	let if_block = /*editMode*/ ctx[0] === "new" && create_if_block$3(ctx);
 
     	const meetupgrid = new MeetupGrid({
-    			props: { meetups: /*meetups*/ ctx[0] },
+    			props: { meetups: /*$meetups*/ ctx[1] },
     			$$inline: true
     		});
 
-    	meetupgrid.$on("togglefavorite", /*togglefavorite*/ ctx[3]);
+    	meetupgrid.$on("togglefavorite", togglefavorite);
 
     	const block = {
     		c: function create() {
@@ -3163,9 +3290,9 @@ var app = (function () {
     			t2 = space();
     			create_component(meetupgrid.$$.fragment);
     			attr_dev(div, "class", "meetup-control svelte-158bm2q");
-    			add_location(div, file$8, 89, 2, 2509);
+    			add_location(div, file$8, 51, 2, 1008);
     			attr_dev(main, "class", "svelte-158bm2q");
-    			add_location(main, file$8, 88, 0, 2500);
+    			add_location(main, file$8, 50, 0, 999);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3185,13 +3312,13 @@ var app = (function () {
     		p: function update(ctx, [dirty]) {
     			const button_changes = {};
 
-    			if (dirty & /*$$scope*/ 64) {
+    			if (dirty & /*$$scope*/ 32) {
     				button_changes.$$scope = { dirty, ctx };
     			}
 
     			button.$set(button_changes);
 
-    			if (/*editMode*/ ctx[1] === "new") {
+    			if (/*editMode*/ ctx[0] === "new") {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     					transition_in(if_block, 1);
@@ -3212,7 +3339,7 @@ var app = (function () {
     			}
 
     			const meetupgrid_changes = {};
-    			if (dirty & /*meetups*/ 1) meetupgrid_changes.meetups = /*meetups*/ ctx[0];
+    			if (dirty & /*$meetups*/ 2) meetupgrid_changes.meetups = /*$meetups*/ ctx[1];
     			meetupgrid.$set(meetupgrid_changes);
     		},
     		i: function intro(local) {
@@ -3251,97 +3378,60 @@ var app = (function () {
     	return block;
     }
 
-    function instance$7($$self, $$props, $$invalidate) {
-    	let meetups = [
-    		{
-    			id: "meet1",
-    			title: "Coding Bootcamp",
-    			subtitle: "Learn to code in 30 Minutes",
-    			description: "In this meetup, we will have some experts that teach",
-    			imageUrl: "https://elevenfifty.org/wp-content/uploads/2017/04/Coding-Bootcamp-1-880x499.jpg",
-    			address: "27the Nerd Road,  32523 New York",
-    			contactEmail: "testing-testing@eamail.com",
-    			isFavorite: false
-    		},
-    		{
-    			id: "meet2",
-    			title: "Boys Night Out",
-    			subtitle: "Boys Stepping Out",
-    			description: "Time for the real Gees to have some good time, bro-bonding",
-    			imageUrl: "https://www.partner-kz.com/wp-content/uploads/2019/01/Great-Boys%E2%80%99-Night-Out.jpg",
-    			address: "1020 ParkEast Road,  32523 Las Vegas",
-    			contactEmail: "testing@eamail.com",
-    			isFavorite: false
-    		},
-    		{
-    			id: "meet3",
-    			title: "Double Date",
-    			subtitle: "First of its Kind",
-    			description: "Its time for that double date amongs the lovers",
-    			imageUrl: "https://www.liberaldictionary.com/wp-content/uploads/2018/12/double-date.jpg",
-    			address: "2234 Starklet Road,  32523 Los Angeles",
-    			contactEmail: "testing-testing@eamail.com",
-    			isFavorite: false
-    		}
-    	];
+    function togglefavorite(event) {
+    	const id = event.detail;
+    	customMeetUpStore.toggleFavorite(id);
+    }
 
+    function instance$7($$self, $$props, $$invalidate) {
+    	let $meetups;
+    	validate_store(customMeetUpStore, "meetups");
+    	component_subscribe($$self, customMeetUpStore, $$value => $$invalidate(1, $meetups = $$value));
     	let editMode;
 
     	function addMeetup(event) {
-    		const newMeetup = {
-    			id: Math.random().toString(),
+    		const meetupData = {
     			title: event.detail.title,
     			subtitle: event.detail.subtitle,
+    			contactEmail: event.detail.email,
     			description: event.detail.description,
     			imageUrl: event.detail.imageUrl,
-    			address: event.detail.address,
-    			contactEmail: event.detail.email
+    			address: event.detail.address
     		}; // isFavorite: false
 
-    		$$invalidate(0, meetups = [newMeetup, ...meetups]);
-    		$$invalidate(1, editMode = null);
-    	}
-
-    	function togglefavorite(event) {
-    		const id = event.detail;
-    		const updatedMeetup = { ...meetups.find(m => m.id === id) };
-    		updatedMeetup.isFavorite = !updatedMeetup.isFavorite;
-    		const meetupIndex = meetups.findIndex(m => m.id === id);
-    		const updatedMeetups = [...meetups];
-    		updatedMeetups[meetupIndex] = updatedMeetup;
-    		$$invalidate(0, meetups = updatedMeetups);
+    		customMeetUpStore.addMeetup(meetupData);
+    		$$invalidate(0, editMode = null);
     	}
 
     	function cancelEdit() {
-    		$$invalidate(1, editMode = null);
+    		$$invalidate(0, editMode = null);
     	}
 
-    	const click_handler = () => $$invalidate(1, editMode = "new");
+    	const click_handler = () => $$invalidate(0, editMode = "new");
 
     	$$self.$capture_state = () => ({
+    		meetups: customMeetUpStore,
     		Header,
     		MeetupGrid,
     		TextInput,
     		Button,
     		EditMeetup,
-    		meetups,
     		editMode,
     		addMeetup,
     		togglefavorite,
     		cancelEdit,
-    		Math
+    		$meetups
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("meetups" in $$props) $$invalidate(0, meetups = $$props.meetups);
-    		if ("editMode" in $$props) $$invalidate(1, editMode = $$props.editMode);
+    		if ("editMode" in $$props) $$invalidate(0, editMode = $$props.editMode);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [meetups, editMode, addMeetup, togglefavorite, cancelEdit, click_handler];
+    	return [editMode, $meetups, addMeetup, cancelEdit, click_handler];
     }
 
     class App extends SvelteComponentDev {
