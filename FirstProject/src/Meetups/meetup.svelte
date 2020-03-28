@@ -96,7 +96,9 @@
     <p>{description}</p>
   </div>
   <footer>
-    <Button mode ="outline" type="button" on:click={()=> dispatch('edit', id)}>Edit</Button>
+    <Button mode="outline" type="button" on:click={() => dispatch('edit', id)}>
+      Edit
+    </Button>
     <Button
       type="button"
       mode="outline"
