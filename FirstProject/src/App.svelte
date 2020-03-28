@@ -6,34 +6,39 @@
   import TextInput from "./UI/TextInput.svelte";
   import Button from "./UI/Button.svelte";
   import EditMeetup from "./Meetups/EditMeetup.svelte";
+  import MeetupDetail from "./Meetups/MeetupDetail.svelte";
 
   //let meetups;
 
   let editMode;
+  let editedId;
+  let page = "overview";
 
-  function addMeetup(event) {
-    const meetupData = {
-      title: event.detail.title,
-      subtitle: event.detail.subtitle,
-      contactEmail: event.detail.email,
-      description: event.detail.description,
-      imageUrl: event.detail.imageUrl,
-      address: event.detail.address
-      // isFavorite: false
-    };
+  let pageData = {};
 
-    meetups.addMeetup(meetupData);
-
+  function savedMeetup(event) {
     editMode = null;
-  }
-
-  function togglefavorite(event) {
-    const id = event.detail;
-    meetups.toggleFavorite(id);
+    editedId = null;
   }
 
   function cancelEdit() {
     editMode = null;
+    editedId = null;
+  }
+
+  function startEdit(event) {
+    editMode = "edit";
+    editedId = event.detail;
+  }
+
+  function showDetails(event) {
+    page = "details";
+    pageData.id = event.detail;
+  }
+
+  function closeDetail() {
+    page = "overview";
+    pageData = {};
   }
 </script>
 
@@ -41,19 +46,23 @@
   main {
     margin-top: 5rem;
   }
-  .meetup-control {
-    margin: 1rem;
-  }
 </style>
 
 <Header />
 
 <main>
-  <div class="meetup-control">
-    <Button on:click={() => (editMode = 'new')}>New MeetUp</Button>
-  </div>
-  {#if editMode === 'new'}
-    <EditMeetup on:save={addMeetup} on:cancel={cancelEdit} />
+  {#if page === 'overview'}
+    {#if editMode === 'edit'}
+      <EditMeetup id={editedId} on:save={savedMeetup} on:cancel={cancelEdit} />
+    {/if}
+    <MeetupGrid
+      meetups={$meetups}
+      on:showdetails={showDetails}
+      on:edit={startEdit}
+      on:add={() => {
+        editMode = 'edit';
+      }} />
+  {:else}
+    <MeetupDetail id={pageData.id} on:close={closeDetail} />
   {/if}
-  <MeetupGrid meetups={$meetups} on:togglefavorite={togglefavorite} />
 </main>
